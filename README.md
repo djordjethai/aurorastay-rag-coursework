@@ -16,24 +16,29 @@ scores or automatically approve guest-facing answers.
 
 Add `OPENAI_API_KEY` as a GitHub Codespaces secret before starting the Codespace.
 `OPENAI_API_BASE` is optional for a compatible custom endpoint. Never commit keys.
-In the Codespace terminal, run:
+In the Codespace terminal, run the two containers with host networking. In this
+Codespace, Docker's user-defined bridge DNS could not resolve `api.openai.com`,
+while host networking could; no application code change was needed.
 
 ```bash
-docker network create aurorastay-net
 docker build -t aurorastay-api ./backend
 docker build -t aurorastay-ui ./frontend
-docker run -d --name aurorastay-api --network aurorastay-net \
-  -p 7860:7860 -e OPENAI_API_KEY -e OPENAI_API_BASE aurorastay-api
-docker run -d --name aurorastay-ui --network aurorastay-net \
-  -p 8501:8501 -e BACKEND_URL=http://aurorastay-api:7860 aurorastay-ui
+docker run -d --name aurorastay-api --network host \
+  -e OPENAI_API_KEY -e OPENAI_API_BASE aurorastay-api
+docker run -d --name aurorastay-ui --network host \
+  -e BACKEND_URL=http://127.0.0.1:7860 aurorastay-ui
 ```
 
 Keep forwarded ports private. Use the authenticated Codespaces browser or
 port-forwarding to inspect the UI and API. Example API payload:
 
 ```json
-{"query":"What is the pet charge at ASH-CHI Loop?","k":3,"model_name":"gpt-4o-mini","temperature":0,"top_p":1,"max_tokens":512}
+{"query":"What is the pet charge at ASH-CHI Loop, and are service animals exempt?","k":5,"model_name":"gpt-4o-mini","temperature":0,"top_p":1,"max_tokens":512}
 ```
 
-The Docker containers have not been built or tested merely by being present in
-this repository; record their actual Codespaces test results separately.
+The backend and frontend images were built in Codespaces and both containers
+returned HTTP 200 on their health/UI checks. Through private forwarded ports,
+`/v1/relevant_chunks` returned five passages and
+`/v1/answer_with_relevant_chunks` returned a source-backed answer for the sample
+question. These checks do not establish general answer reliability; staff
+should review the retrieved evidence before using a draft with a guest.
