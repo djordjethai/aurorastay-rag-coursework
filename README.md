@@ -33,7 +33,7 @@ Keep forwarded ports private. Use the authenticated Codespaces browser or
 port-forwarding to inspect the UI and API. Example API payload:
 
 ```json
-{"query":"What is the pet charge at ASH-CHI Loop, and are service animals exempt?","k":5,"model_name":"gpt-4o-mini","temperature":0,"top_p":1,"max_tokens":512}
+{"query":"What is the baseline smoking or vaping remediation charge?","k":5,"model_name":"gpt-4o-mini","temperature":0,"top_p":1,"max_tokens":512}
 ```
 
 The backend and frontend images were built in Codespaces and both containers
