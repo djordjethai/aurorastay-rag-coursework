@@ -44,10 +44,11 @@ port-forwarding to inspect the UI and API. Example API payload:
 {"query":"What is the baseline smoking or vaping remediation charge?","k":5,"model_name":"gpt-4o-mini","temperature":0,"top_p":1,"max_tokens":512}
 ```
 
-The V3 backend and frontend images were built in Codespaces and both containers
-returned HTTP 200 on their health/UI checks. Through private forwarded ports,
-`/v1/relevant_chunks` returned five passages and
-`/v1/answer_with_relevant_chunks` returned a source-backed answer for the sample
-question. V4 has also passed local Flask tests. These checks do not establish
-general answer reliability; staff
-should review the retrieved evidence before using a draft with a guest.
+V4 was rebuilt in the private Codespace at commit `8f5df00`. The Flask health
+endpoint reported 118 vectors and the Streamlit page returned HTTP 200. Through
+private forwarded ports, the smoking-charge retrieval returned two focused
+passages and the full RAG endpoint returned a source-backed answer. A separate
+Atlanta/Miami query returned both named property rows. V4 also passed local
+Flask tests. These checks do not establish general answer reliability or prove
+an end-to-end browser interaction; staff should review the retrieved evidence
+before using a draft with a guest.
