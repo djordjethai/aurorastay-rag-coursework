@@ -12,6 +12,14 @@ The API loads the embedding model and FAISS index once at startup and exposes
 source passages for staff verification. It does **not** compute live DeepEval
 scores or automatically approve guest-facing answers.
 
+V4 contains a 118-vector index
+that excludes navigation/administrative fragments and duplicate policy rows.
+Retrieval reranks FAISS candidates by policy terms, covers each named property,
+and treats `k` as the maximum number of passages rather than padding with weak
+matches. The notebook's unchanged four offline metrics meet their mean gates
+on development, reused supplied-test, and newly locked questions. That small
+test does not establish production reliability or remove staff review.
+
 ## Codespaces run
 
 Add `OPENAI_API_KEY` as a GitHub Codespaces secret before starting the Codespace.
@@ -36,9 +44,10 @@ port-forwarding to inspect the UI and API. Example API payload:
 {"query":"What is the baseline smoking or vaping remediation charge?","k":5,"model_name":"gpt-4o-mini","temperature":0,"top_p":1,"max_tokens":512}
 ```
 
-The backend and frontend images were built in Codespaces and both containers
+The V3 backend and frontend images were built in Codespaces and both containers
 returned HTTP 200 on their health/UI checks. Through private forwarded ports,
 `/v1/relevant_chunks` returned five passages and
 `/v1/answer_with_relevant_chunks` returned a source-backed answer for the sample
-question. These checks do not establish general answer reliability; staff
+question. V4 has also passed local Flask tests. These checks do not establish
+general answer reliability; staff
 should review the retrieved evidence before using a draft with a guest.
