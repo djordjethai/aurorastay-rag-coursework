@@ -1,10 +1,10 @@
 # AuroraStay policy Q&A proof of concept
 
-Private coursework deployment bundle generated from the executed full-code notebook.
+Public coursework deployment bundle generated from the executed full-code notebook.
 It contains only the Flask API, Streamlit UI, pinned dependencies, Dockerfiles, and
 the prebuilt FAISS index. The source policy PDFs and course materials are not here.
-The index contains excerpts from proprietary policy documents: keep this repository
-private and do not redistribute its contents.
+AuroraStay is a fictional example. The index does contain excerpts from its
+sample policy documents, so review the repository contents before reusing them.
 
 The API loads the embedding model and FAISS index once at startup and exposes
 `POST /v1/relevant_chunks`, `POST /v1/answer_with_relevant_chunks`, and
@@ -37,18 +37,23 @@ docker run -d --name aurorastay-ui --network host \
   -e BACKEND_URL=http://127.0.0.1:7860 aurorastay-ui
 ```
 
-Keep forwarded ports private. Use the authenticated Codespaces browser or
-port-forwarding to inspect the UI and API. Example API payload:
+Keep the API port private: its inference endpoints are unauthenticated and can
+consume paid OpenAI API calls. Use the authenticated Codespaces browser or
+private port-forwarding to inspect the UI and API. If a public UI demo is needed,
+expose only the Streamlit port temporarily, then stop the Codespace afterward.
+Example API payload:
 
 ```json
 {"query":"What is the baseline smoking or vaping remediation charge?","k":5,"model_name":"gpt-4o-mini","temperature":0,"top_p":1,"max_tokens":512}
 ```
 
-V4 was rebuilt in the private Codespace at commit `8f5df00`. The Flask health
-endpoint reported 118 vectors and the Streamlit page returned HTTP 200. Through
-private forwarded ports, the smoking-charge retrieval returned two focused
-passages and the full RAG endpoint returned a source-backed answer. A separate
-Atlanta/Miami query returned both named property rows. V4 also passed local
-Flask tests. These checks do not establish general answer reliability or prove
-an end-to-end browser interaction; staff should review the retrieved evidence
-before using a draft with a guest.
+V4 was rebuilt and tested in Codespaces. The Flask health endpoint reported
+118 vectors. The smoking-charge retrieval returned two focused passages, and
+the full RAG endpoint returned a source-backed answer. A separate Atlanta/Miami
+query returned both named property rows. A later public Streamlit browser check
+displayed the smoking-charge answer and its supporting policy passage. V4 also
+passed local Flask tests. The demo Codespace is currently stopped, so its app
+endpoints are unavailable; the links are not permanent hosting. Before any
+restart, confirm that the API port is private. These checks do not establish
+general answer reliability; staff should review the retrieved evidence before
+using a draft with a guest.
